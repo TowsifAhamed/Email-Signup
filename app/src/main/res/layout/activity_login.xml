@@ -38,14 +38,18 @@
             android:layout_height="wrap_content"
             android:text="Forgot password?"
             android:id="@+id/forgot_pass"
-            android:layout_marginLeft="50dp"/>
+            android:layout_marginLeft="25dp"/>
 
         <Button
             android:id="@+id/register"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="50dp"
+            android:layout_marginStart="11dp"
+            android:layout_marginLeft="11dp"
+            android:layout_marginRight="25dp"
+            android:layout_toEndOf="@+id/forgot_pass"
+            android:layout_toRightOf="@+id/forgot_pass"
             android:text="Register" />
     </RelativeLayout>
 </LinearLayout>

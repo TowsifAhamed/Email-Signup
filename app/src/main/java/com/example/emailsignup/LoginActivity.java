@@ -20,6 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email,pass;
     private Button login_btn;
+    private Button reg_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +30,18 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         pass = findViewById(R.id.pass);
         login_btn = findViewById(R.id.login_btn);
+        reg_btn = findViewById(R.id.register);
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 UserLogin();
+            }
+        });
+        reg_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
     }
