@@ -19,6 +19,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -34,8 +37,11 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private Button logout_btn;
-
+    private Button profile;
     private MapView map = null;
+    private FirebaseUser user;
+    private DatabaseReference reference;
+    private String userID;
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
 
@@ -52,12 +58,25 @@ public class MainActivity extends AppCompatActivity {
         double longitude = location.getLongitude();
         double latitude = location.getLatitude();
 
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("users");
+        userID = user.getUid();
+        reference.child(userID).child("latitude").setValue(latitude);
+        reference.child(userID).child("longitude").setValue(longitude);
+
         logout_btn = findViewById(R.id.logout_btn);
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+        profile = findViewById(R.id.profile);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
             }
         });
         Context ctx = this.getApplicationContext();

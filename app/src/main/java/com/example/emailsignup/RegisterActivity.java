@@ -3,6 +3,7 @@ package com.example.emailsignup;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.service.autofill.AutofillService;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText email,pass1,pass2;
     private CheckBox donor,in_need;
-    private Button registration_btn;
+    private Button registration_btn,login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,18 @@ public class RegisterActivity extends AppCompatActivity {
         donor=findViewById(R.id.donor);
         in_need=findViewById(R.id.in_need);
         registration_btn=findViewById(R.id.registration_btn);
+        login = findViewById(R.id.login);
 
         registration_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RegisterUser();
+            }
+        });
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
     }
@@ -91,14 +99,16 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    User user = new User(stremail, booldonor, boolin_need);
+                                    User user = new User(stremail, booldonor, boolin_need, "", "", "", "", "", 0.0, 0.0, "", "");
 
                                     FirebaseDatabase.getInstance().getReference("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
-                                                Toast.makeText(RegisterActivity.this,"User registration is successful!",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(RegisterActivity.this,"User registration is successful! Please Verify your mail and Login!",Toast.LENGTH_SHORT).show();
+                                                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification();
+                                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                                             }
                                             else {
                                                 Toast.makeText(RegisterActivity.this,"Failed to register, try again!",Toast.LENGTH_SHORT).show();

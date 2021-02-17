@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText email,pass;
     private Button login_btn;
-    private Button reg_btn;
+    private Button reg_btn,forgot_pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         pass = findViewById(R.id.pass);
         login_btn = findViewById(R.id.login_btn);
         reg_btn = findViewById(R.id.register);
+        forgot_pass = findViewById(R.id.forgot_pass);
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,6 +43,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
+        forgot_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
             }
         });
     }
