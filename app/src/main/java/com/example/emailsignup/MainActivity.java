@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -50,19 +51,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double longitude = location.getLongitude();
-        double latitude = location.getLatitude();
+        Location location = getLocationWithCheckNetworkAndGPS(this);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("users");
         userID = user.getUid();
-        reference.child(userID).child("latitude").setValue(latitude);
-        reference.child(userID).child("longitude").setValue(longitude);
+        reference.child(userID).child("latitude").setValue(location.getLatitude());
+        reference.child(userID).child("longitude").setValue(location.getLongitude());
 
         logout_btn = findViewById(R.id.logout_btn);
         logout_btn.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         compassOverlay.enableCompass();
         map.getOverlays().add(compassOverlay);
 
-        GeoPoint point = new GeoPoint(latitude, longitude);
+        GeoPoint point = new GeoPoint(location.getLatitude(),location.getLongitude());
 
         Marker startMarker = new Marker(map);
         startMarker.setPosition(point);
@@ -134,5 +129,39 @@ public class MainActivity extends AppCompatActivity {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+    public static Location getLocationWithCheckNetworkAndGPS(Context mContext) {
+        LocationManager lm = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
+        assert lm != null;
+        Boolean isGpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        Boolean isNetworkLocationEnabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        Location networkLoacation = null, gpsLocation = null, finalLoc = null;
+        if (isGpsEnabled)
+            if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                return null;
+            }gpsLocation = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (isNetworkLocationEnabled)
+            networkLoacation = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        if (gpsLocation != null && networkLoacation != null) {
+
+            //smaller the number more accurate result will
+            if (gpsLocation.getAccuracy() > networkLoacation.getAccuracy())
+                return finalLoc = networkLoacation;
+            else
+                return finalLoc = gpsLocation;
+
+        } else {
+
+            if (gpsLocation != null) {
+                return finalLoc = gpsLocation;
+            } else if (networkLoacation != null) {
+                return finalLoc = networkLoacation;
+            }
+        }
+        return finalLoc;
     }
 }
