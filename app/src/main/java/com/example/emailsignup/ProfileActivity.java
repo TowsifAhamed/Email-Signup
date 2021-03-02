@@ -3,6 +3,7 @@ package com.example.emailsignup;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText name,phone,country,city,bday;
     private TextView donor,in_need,email;
     private Spinner bgroup,need_bgroup;
-    private Button submit;
+    private Button submit,company;
     private FirebaseUser user;
     private DatabaseReference reference;
     private String userID;
@@ -61,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
         bgroup = findViewById(R.id.bgroup);
         need_bgroup = findViewById(R.id.need_bgroup);
         submit = findViewById(R.id.submit);
+        company = findViewById(R.id.company);
 
         final Calendar myCalendar = Calendar.getInstance();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -84,6 +86,12 @@ public class ProfileActivity extends AppCompatActivity {
                 new DatePickerDialog(ProfileActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+        company.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ProfileActivity.this, CompanyActivity.class));
             }
         });
 
