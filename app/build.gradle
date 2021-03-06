@@ -35,4 +35,5 @@ dependencies {
 
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
     implementation 'com.opencsv:opencsv:4.6'
+    implementation 'org.jsoup:jsoup:1.11.1'
 }

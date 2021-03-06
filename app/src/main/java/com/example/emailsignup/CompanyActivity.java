@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 
 public class CompanyActivity extends AppCompatActivity {
     private TextView choose_file1,choose_file2;
-    private Button pick_file1,pick_file2,model;
+    private Button pick_file1,pick_file2,model,web;
     private TextView result;
     Intent file_intent1,file_intent2;
     String trainpath,testpath;
@@ -33,6 +33,13 @@ public class CompanyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_company);
         model = findViewById(R.id.model);
         result = findViewById(R.id.result);
+        web = findViewById(R.id.web);
+        web.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CompanyActivity.this, WebActivity.class));
+            }
+        });
         choose_file1 = findViewById(R.id.choose_file1);
         pick_file1 = findViewById(R.id.pick_file1);
         pick_file1.setOnClickListener(new View.OnClickListener() {
